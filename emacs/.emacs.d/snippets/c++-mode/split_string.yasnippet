@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: split_string
+# key: split_string
+# --
+
+inline std::vector<std::string> split(const std::string& s, const char delimiter)
+{
+    std::stringstream ss(s);
+    std::string token;
+    std::vector<std::string> tokens;
+    while (std::getline(ss, token, delimiter)) {
+        tokens.emplace_back(token);
+    }
+    return tokens;
+}

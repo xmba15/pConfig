@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: get_args
+# key: get_args
+# --
+
+def get_args():
+    parser = argparse.ArgumentParser('Test your image or video by trained model.')
+    parser.add_argument('-cfgfile', type=str, default='./cfg/yolov4.cfg',
+                        help='path of cfg file', dest='cfgfile')
+    args = parser.parse_args()
+
+    return args

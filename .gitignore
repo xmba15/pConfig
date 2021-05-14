@@ -1,0 +1,15 @@
+*~
+*.pyc
+
+*.elc
+emacs/.emacs.d/elpa/*
+emacs/.emacs.d/places
+emacs/.emacs.d/srecode-map.el
+emacs/.emacs.d/transient/
+emacs/.emacs.d/custom.el
+emacs/.emacs.d/history
+emacs/.emacs.d/recentf
+emacs/.emacs.d/semanticdb/
+emacs/.emacs.d/smex-items
+emacs/.emacs.d/ido.last
+emacs/.emacs.d/irony

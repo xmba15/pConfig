@@ -1,0 +1,45 @@
+# -*- mode: snippet -*-
+# name : unweighted_graph
+# key : unweighted_graph
+# --
+
+#include <sstream>
+#include <utility>
+#include <vector>
+
+class UnweightedGraph {
+public:
+  struct Edge {
+    int m_src, m_dst;
+  };
+
+public:
+  UnweightedGraph(const std::vector<Edge> &edges, const int nodeNum,
+                  const bool isDirected = false)
+      : m_nodeNum(nodeNum), m_isDirected(isDirected) {
+    m_adjList.resize(nodeNum);
+
+    for (const auto &edge : edges) {
+      m_adjList[edge.m_src].emplace_back(edge.m_dst);
+      if (!m_isDirected) {
+        m_adjList[edge.m_dst].emplace_back(edge.m_src);
+      }
+    }
+  }
+
+  friend std::ostream &operator<<(std::ostream &os, const UnweightedGraph &g) {
+    for (int i = 0; i < g.m_nodeNum; ++i) {
+      os << i << " --> ";
+      for (const auto v : g.m_adjList[i]) {
+        os << v << " ";
+      }
+      os << std::endl;
+    }
+    return os;
+  }
+
+private:
+  std::vector<std::vector<int>> m_adjList;
+  int m_nodeNum;
+  bool m_isDirected;
+};

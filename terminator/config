@@ -1,0 +1,130 @@
+[global_config]
+  enabled_plugins = TerminatorThemes, TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
+  homogeneous_tabbar = False
+  scroll_tabbar = True
+  tab_position = bottom
+  window_state = hidden
+[keybindings]
+  move_tab_left = <Primary><Shift>Up
+  move_tab_right = <Primary><Shift>Down
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+  [[simples]]
+    [[[child0]]]
+      order = 0
+      parent = ""
+      position = 0:25
+      size = 715, 694
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 348
+      type = VPaned
+    [[[terminal2]]]
+      command = cd ~/work; bash
+      order = 0
+      parent = child1
+      profile = default
+      type = Terminal
+    [[[terminal3]]]
+      command = cd ~/work; bash
+      order = 1
+      parent = child1
+      profile = default
+      type = Terminal
+[plugins]
+[profiles]
+  [[default]]
+    background_color = "#1c1f27"
+    background_darkness = 0.97
+    background_type = transparent
+    cursor_color = "#a0a4b2"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#979cac"
+    palette = "#4f4f4f:#af4b57:#afd383:#e5c079:#7d90a4:#a4799d:#85a6a5:#eeedee:#7b7b7b:#af4b57:#ceffab:#fffecc:#b5dcfe:#fb9bfe:#dfdffd:#fefffe"
+    scrollbar_position = hidden
+    show_titlebar = False
+  [[3024 Day]]
+    background_color = "#f7f7f7"
+    cursor_color = "#4a4543"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#4a4543"
+    palette = "#090300:#db2d20:#01a252:#fded02:#01a0e4:#a16a94:#b5e4f4:#a5a2a2:#5c5855:#e8bbd0:#3a3432:#4a4543:#807d7c:#d6d5d4:#cdab53:#f7f7f7"
+    show_titlebar = False
+  [[3024 Night]]
+    background_color = "#090300"
+    cursor_color = "#a5a2a2"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#a5a2a2"
+    palette = "#090300:#db2d20:#01a252:#fded02:#01a0e4:#a16a94:#b5e4f4:#a5a2a2:#5c5855:#e8bbd0:#3a3432:#4a4543:#807d7c:#d6d5d4:#cdab53:#f7f7f7"
+    show_titlebar = False
+  [[Aci]]
+    background_color = "#0d1926"
+    cursor_color = "#c4e9ff"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#b4e1fd"
+    palette = "#363636:#ff0883:#83ff08:#ff8308:#0883ff:#8308ff:#08ff83:#b6b6b6:#363636:#ff0883:#83ff08:#ff8308:#0883ff:#8308ff:#08ff83:#b6b6b6"
+    show_titlebar = False
+  [[Aco]]
+    background_color = "#1f1305"
+    cursor_color = "#bae2fb"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#b4e1fd"
+    palette = "#3f3f3f:#ff0883:#83ff08:#ff8308:#0883ff:#8308ff:#08ff83:#bebebe:#474747:#ff1e8e:#8eff1e:#ff8e1e:#0883ff:#8e1eff:#1eff8e:#c4c4c4"
+    show_titlebar = False
+  [[AdventureTime]]
+    background_color = "#1f1d45"
+    cursor_color = "#efbf38"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#f8dcc0"
+    palette = "#050404:#bd0013:#4ab118:#e7741e:#0f4ac6:#665993:#70a598:#f8dcc0:#4e7cbf:#fc5f5a:#9eff6e:#efc11a:#1997c6:#9b5953:#c8faf4:#f6f5fb"
+    show_titlebar = False
+  [[Afterglow]]
+    background_color = "#212121"
+    cursor_color = "#d0d0d0"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#d0d0d0"
+    palette = "#151515:#ac4142:#7e8e50:#e5b567:#6c99bb:#9f4e85:#7dd6cf:#d0d0d0:#505050:#ac4142:#7e8e50:#e5b567:#6c99bb:#9f4e85:#7dd6cf:#f5f5f5"
+    show_titlebar = False
+  [[Darkside]]
+    background_color = "#222324"
+    cursor_color = "#bbbbbb"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#bababa"
+    palette = "#000000:#e8341c:#68c256:#f2d42c:#1c98e8:#8e69c9:#1c98e8:#bababa:#000000:#e05a4f:#77b869:#efd64b:#387cd3:#957bbe:#3d97e2:#bababa"
+    show_titlebar = False
+  [[Japanesque]]
+    background_color = "#1e1e1e"
+    cursor_color = "#edcf4f"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#f7f6ec"
+    palette = "#343935:#cf3f61:#7bb75b:#e9b32a:#4c9ad4:#a57fc4:#389aad:#fafaf6:#595b59:#d18fa6:#767f2c:#78592f:#135979:#604291:#76bbca:#b2b5ae"
+    show_titlebar = False
+  [[Ocean dark]]
+    background_color = "#1c1f27"
+    cursor_color = "#a0a4b2"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#979cac"
+    palette = "#4F4F4F:#AF4B57:#AFD383:#E5C079:#7D90A4:#A4799D:#85A6A5:#EEEDEE:#7B7B7B:#AF4B57:#CEFFAB:#FFFECC:#B5DCFE:#FB9BFE:#DFDFFD:#FEFFFE"
+    show_titlebar = False
+  [[Pandora]]
+    background_color = "#141e43"
+    cursor_color = "#43d58e"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#e1e1e1"
+    palette = "#000000:#ff4242:#74af68:#ffad29:#338f86:#9414e6:#23d7d7:#e2e2e2:#3f5648:#ff3242:#74cd68:#ffb929:#23d7d7:#ff37ff:#00ede1:#ffffff"
+    show_titlebar = False
+  [[ayu_light]]
+    background_color = "#fafafa"
+    cursor_color = "#ff6a00"
+    font = TeX Gyre Bonum Italic 13
+    foreground_color = "#5c6773"
+    palette = "#000000:#ff3333:#86b300:#f29718:#41a6d9:#f07178:#4dbf99:#ffffff:#323232:#ff6565:#b8e532:#ffc94a:#73d8ff:#ffa3aa:#7ff1cb:#ffffff"
+    show_titlebar = False

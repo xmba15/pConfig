@@ -1,0 +1,13 @@
+<launch>
+  <arg name="rosbag_path" default=""/>
+  <arg name="image_topic" default=""/>
+  <arg name="output_path" default="~"/>
+
+  <group if="$(eval arg('rosbag_path') != '' and arg('image_topic') != '')">
+    <node pkg="rosbag" type="play" name="rosbag" required="true" args="$(arg rosbag_path)"/>
+    <node name="extract" pkg="image_view" type="extract_images" respawn="false" required="true" output="screen" cwd="ROS_HOME">
+      <remap from="image" to="$(arg image_topic)"/>
+      <param name="~filename_format" value="$(arg output_path)/frame%05d.jpg" />
+    </node>
+  </group>
+</launch>
