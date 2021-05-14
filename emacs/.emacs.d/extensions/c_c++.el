@@ -8,22 +8,6 @@
 ;; indent for openmp
 (c-set-offset (quote cpp-macro) 0 nil)
 
-;; (use-package flymake-google-cpplint
-;;   :ensure t
-;;   :init
-;;   (defun my:flymake-google-init ()
-;;     (require 'flymake-google-cpplint)
-;;     (custom-set-variables
-;;      '(flymake-google-cpplint-command "/usr/local/bin/cpplint"))
-;;     (flymake-google-cpplint-load)
-;;   )
-;;   (add-hook 'c-mode-hook 'my:flymake-google-init)
-;;   (add-hook 'c++-mode-hook 'my:flymake-google-init)
-;; )
-
-;; add flymake-cursor-mode
-(eval-after-load 'flymake '(require 'flymake-cursor))
-
 (use-package google-c-style
   :ensure t
   :init
@@ -33,6 +17,11 @@
 
 ;; install clang-dev with the following command in ubuntu
 ;; sudo apt-get install libclang-dev
+
+(use-package company
+  :ensure t
+)
+
 (use-package irony
   :ensure t
   :init
@@ -42,17 +31,20 @@
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-irony))
-
 )
-(add-to-list 'company-backends 'company-c-headers)
 
-(setq company-c-headers-path-system '(
-                                      "/usr/include/c++/5"
-                                      "/usr/include"
-                                      "/usr/local/include"
-                                      "/usr/include/eigen3"
-                                      "/usr/local/include/eigen3"
-                                      ))
+(use-package company-c-headers
+  :ensure t
+  :init
+  (add-to-list 'company-backends 'company-c-headers)
+  (setq company-c-headers-path-system '(
+                                        "/usr/include/c++/5"
+                                        "/usr/include"
+                                        "/usr/local/include"
+                                        "/usr/include/eigen3"
+                                        "/usr/local/include/eigen3"
+                                        ))
+)
 
 (add-hook 'c-mode-hook 'electric-pair-mode)
 (add-hook 'c++-mode-hook 'electric-pair-mode)
@@ -63,8 +55,12 @@
 ;; -DCMAKE_PREFIX_PATH=/usr/local/opt/llvm
 ;;  after cmake to specify where the llvm is. Finally everything is ok.
 
-(eval-after-load 'flycheck
-  '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+(use-package flycheck-irony
+  :ensure t
+  :init
+  (eval-after-load 'flycheck
+    '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+)
 
 ;; set clang-format
 ;; install clang-format and make a symbolic link in /usr/bin/

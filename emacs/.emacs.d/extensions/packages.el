@@ -1,8 +1,8 @@
 (provide 'packages)
 
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 
 (if (not (package-installed-p 'use-package))
@@ -36,9 +36,12 @@
   :init
   (yas-global-mode 1)
   (setq yas-snippet-dirs
-      '("~/.emacs.d/snippets"
-        ;; "~/.emacs.d/elpa/yasnippet-snippets-20180503.657/snippets"
-        ))
+        '("~/.emacs.d/snippets"
+         )
+  )
+  (use-package yasnippet-snippets
+    :ensure t
+  )
 )
 
 (use-package elpy
@@ -90,7 +93,11 @@
 )
 
 ;; flycheck setting
-(add-hook 'after-init-hook #'global-flycheck-mode)
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode t)
+)
 
 ;; company setting
 (use-package company
@@ -167,5 +174,13 @@
 
 ;; maximize current window (the appearance differs from that when using C-x 1)
 (define-key global-map (kbd "C-c C-m") 'maximize-window)
+
+(use-package ag
+  :ensure t
+)
+
+(use-package magit
+  :ensure t
+)
 
 ;;; packages.el ends here

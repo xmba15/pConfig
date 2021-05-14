@@ -1,35 +1,3 @@
-;;; commands.el --- summary -*- lexical-binding: t -*-
-
-;; Author: xmba15
-;; Maintainer: xmba15
-;; Version: version
-;; Package-Requires: (dependencies)
-;; Homepage: homepage
-;; Keywords: keywords
-
-
-;; This file is not part of GNU Emacs
-
-;; This file is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 3, or (at your option)
-;; any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; For a full copy of the GNU General Public License
-;; see <http://www.gnu.org/licenses/>.
-
-
-;;; Commentary:
-
-;; commentary
-
-;;; Code:
-
 (message "process commands.el!")
 
 (provide 'commands)
@@ -121,7 +89,11 @@
 ;; (setq split-width-threshold nil) ;; vertical
 
 ;; duplicate thing
-(global-set-key (kbd "C-c d") 'duplicate-thing)
+(use-package duplicate-thing
+  :ensure t
+  :bind (("C-c d" . duplicate-thing)
+        )
+)
 
 (defun sudo-edit (&optional arg)
   (interactive "p")
@@ -129,14 +101,6 @@
       (find-file (concat "/sudo:root@localhost:" (ido-read-file-name "File: ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 (global-set-key (kbd "M-s e") 'sudo-edit)
-
-(global-set-key (kbd "C-c w") 'webjump)
-(eval-after-load "webjump"
-  '(add-to-list 'webjump-sites '("Cambridge Dictionary" .
-                             [simple-query
-                              "https://dictionary.cambridge.org"
-                              "https://dictionary.cambridge.org/dictionary/english/"
-                              ""])))
 
 (global-set-key (kbd "C-c <left>")  'windmove-left)
 (global-set-key (kbd "C-c <right>") 'windmove-right)
@@ -156,9 +120,14 @@
 (global-set-key "\C-c\C-k" 'copy-line)
 
 ;; popup-imenu
-(global-set-key (kbd "C-c p") 'popup-imenu)
-;; Close the popup with same key
-(define-key popup-isearch-keymap (kbd "C-c p") 'popup-isearch-cancel)
+(use-package popup-imenu
+  :ensure t
+  :bind (("C-c p" . popup-imenu)
+        )
+  :init
+  ;; Close the popup with same key
+  (define-key popup-isearch-keymap (kbd "C-c p") 'popup-isearch-cancel)
+)
 
 (defun reload-init-file ()
   (interactive)
@@ -176,7 +145,11 @@
     (which-function-mode t)))
 ;;--------------------------------------------
 
-(global-set-key (kbd "M-g s") 'shell-here)
+(use-package shell-here
+  :ensure t
+  :bind (("M-g s" . shell-here)
+        )
+)
 
 (defun md-table-formatter (start end)
  (interactive "r")

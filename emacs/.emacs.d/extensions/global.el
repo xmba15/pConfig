@@ -1,35 +1,3 @@
-;;; global.el --- summary -*- lexical-binding: t -*-
-
-;; Author: xmba15
-;; Maintainer: xmba15
-;; Version: version
-;; Package-Requires: (dependencies)
-;; Homepage: homepage
-;; Keywords: keywords
-
-
-;; This file is not part of GNU Emacs
-
-;; This file is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 3, or (at your option)
-;; any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; For a full copy of the GNU General Public License
-;; see <http://www.gnu.org/licenses/>.
-
-
-;;; Commentary:
-
-;; commentary
-
-;;; Code:
-
 (message "process global.el!")
 
 (provide 'global)
@@ -61,92 +29,127 @@
 (put 'erase-buffer 'disabled nil)
 
 ;; set up for mode line
-(require 'smart-mode-line)
-(setq sml/active-background-color "gray60")
-;; show column number for mode line
-(column-number-mode 1)
-;; show line number for mode line
-(line-number-mode t)
+(use-package smart-mode-line
+  :ensure t
+  :init
+  (setq sml/active-background-color "gray60")
+  ;; show column number for mode line
+  (column-number-mode 1)
+  ;; show line number for mode line
+  (line-number-mode t)
 
-(setq sml/name-width 20)
-(setq sml/mode-width 'full)
-(setq sml/shorten-directory t)
-(setq sml/shorten-modes t)
+  (setq sml/name-width 20)
+  (setq sml/mode-width 'full)
+  (setq sml/shorten-directory t)
+  (setq sml/shorten-modes t)
 
-(setq sml/no-confirm-load-theme t)
-(sml/setup)
-(sml/apply-theme 'dark)
-;; (sml/apply-theme 'respectful)
-;; (sml/apply-theme 'light)
+  (setq sml/no-confirm-load-theme t)
+  (sml/setup)
+  (sml/apply-theme 'dark)
 
-(add-hook 'after-save-hook
-          (lambda ()
-            (let ((orig-fg (face-background 'mode-line)))
-              (set-face-background 'mode-line "dark green")
-              (run-with-idle-timer 0.1 nil
-                                   (lambda (fg) (set-face-background 'mode-line fg))
-                                   orig-fg))))
+  (add-hook 'after-save-hook
+            (lambda ()
+              (let ((orig-fg (face-background 'mode-line)))
+                (set-face-background 'mode-line "dark green")
+                (run-with-idle-timer 0.1 nil
+                                     (lambda (fg) (set-face-background 'mode-line fg))
+                                     orig-fg))))
+)
 
 ;; show total lines of current files
-(require 'total-lines)
-(global-total-lines-mode t)
-(defun my-set-line-numbers ()
-  (setq-default mode-line-front-space
-        (append mode-line-front-space
-            '((:eval (format " (%d)" (- total-lines 1)))))))
-(add-hook 'after-init-hook 'my-set-line-numbers)
+(use-package total-lines
+  :ensure t
+  :init
+  (global-total-lines-mode t)
+  (defun my-set-line-numbers ()
+    (setq-default mode-line-front-space
+                  (append mode-line-front-space
+                          '((:eval (format " (%d)" (- total-lines 1)))))))
+  (add-hook 'after-init-hook 'my-set-line-numbers)
+)
 
 ;; ivy package
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq ivy-count-format "(%d/%d) ")
-(global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+(use-package ivy
+  :ensure t
+  :init
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+)
 
-(global-set-key (kbd "C-c h") 'counsel-git)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c k") 'counsel-ag)
-(global-set-key (kbd "C-x l") 'counsel-locate)
-(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+(use-package swiper
+  :ensure t
+  :after ivy
+  :init
+  (global-set-key (kbd "C-s") 'swiper)
+)
 
-;; elscreen
-(elscreen-start)
+(use-package counsel
+  :ensure t
+  :after ivy
+  :init
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
+  (global-set-key (kbd "C-c h") 'counsel-git)
+  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  (global-set-key (kbd "C-c k") 'counsel-ag)
+  (global-set-key (kbd "C-x l") 'counsel-locate)
+  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+)
 
 ;; open new shell in the same window
 (push (cons "\\*shell\\*" display-buffer--same-window-action) display-buffer-alist)
 
-(require 'multi-term)
-(setq multi-term-program "/bin/bash")
+(use-package multi-term
+  :ensure t
+  :init
+  (setq multi-term-program "/bin/bash")
+)
 
 ;; beacon
-(beacon-mode 1)
+(use-package beacon
+  :ensure t
+  :init
+  (beacon-mode 1)
+)
 
-(condition-case nil
-   (progn
-      (require 'xclip)
-      (xclip-mode 1) )
-   (file-error (message "xclip has not been installed. Please install xclip")
-))
+(use-package xclip
+  :ensure t
+  :init
+  (condition-case nil
+      (progn
+        (require 'xclip)
+        (xclip-mode 1) )
+    (file-error (message "xclip has not been installed. Please install xclip"))
+  )
+)
 
 ;; add space around operators automatically
-(require 'electric-operator)
-(add-hook 'c++-mode-hook #'electric-operator-mode)
-(add-hook 'c-mode-hook #'electric-operator-mode)
-(add-hook 'python-mode-hook #'electric-operator-mode)
-
-(electric-operator-add-rules-for-mode 'c++-mode
-  (cons ":" nil))
+(use-package electric-operator
+  :ensure t
+  :init
+  (add-hook 'c++-mode-hook #'electric-operator-mode)
+  (add-hook 'c-mode-hook #'electric-operator-mode)
+  (add-hook 'python-mode-hook #'electric-operator-mode)
+)
 
 ;; plantuml-mode setting
-(require 'plantuml-mode)
-(setq plantuml-jar-path "~/publicWorkspace/dev/pConfig/emacs/thirdparty/plantuml.jar")
-(add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
+(use-package plantuml-mode
+  :ensure t
+  :init
+  (setq plantuml-jar-path "~/publicWorkspace/dev/pConfig/emacs/thirdparty/plantuml.jar")
+  (add-to-list 'auto-mode-alist '("\\.puml\\'" . plantuml-mode))
+)
+
+(use-package restart-emacs
+  :ensure t
+)
 
 ;; clear buffer history
 (setq ido-virtual-buffers '())

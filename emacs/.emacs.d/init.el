@@ -1,11 +1,3 @@
-;;; init.el --- summary -*- lexical-binding: t -*-
-
-;;; Commentary:
-
-;; commentary
-
-;;; Code:
-
 (message "start init!")
 
 (package-initialize)
@@ -23,7 +15,6 @@
 (load "~/.emacs.d/extensions/c_c++.el")
 (load "~/.emacs.d/extensions/tags.el")
 (load "~/.emacs.d/extensions/ros.el")
-(load "~/.emacs.d/extensions/matlab.el")
 
 (provide 'init)
 ;;; init.el ends here
