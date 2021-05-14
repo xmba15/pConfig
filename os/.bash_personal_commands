@@ -1,0 +1,202 @@
+# docker environment
+INODE_NUM=`ls -ali / | sed '2!d' |awk {'print $1'}`
+INSIDE_DOCKER=false
+if [ $INODE_NUM != '2' ]; then
+    INSIDE_DOCKER=true
+fi
+export INSIDE_DOCKER
+
+function customized_echo {
+    echo "......................................................................"
+    echo $1
+    echo "......................................................................"
+}
+
+function throw {
+    customized_echo "installation failed"
+    exit $1
+}
+
+# parse current git branch
+function parse_git_branch {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ [\1]/'
+}
+
+function parse_local_gitname {
+    local_gitname=`git config --local -l 2> /dev/null | grep user.name | sed -e 's/user.name=//g' -re 's/\w+/[&]/g'`
+    global_gitname=`git config --global -l 2> /dev/null | grep user.name | sed -e 's/user.name=//g' -re 's/\w+/[&]/g'`
+    if [ ! -z $local_gitname ]; then
+        echo $local_gitname"(l)"
+    elif [ ! -z $global_gitname ]; then
+        echo $global_gitname"(g)"
+    fi
+}
+
+alias clrubbish="rm -rf ./*~"
+alias ..="exec $SHELL"
+readonly os_system=`uname`
+if [ $os_system  == "Linux" ]; then
+    alias open=xdg-open
+    function opendn {
+        xdg-open "$@" 2>/dev/null
+    }
+    alias pbcopy='xclip -selection clipboard'
+    alias pbpaste='xclip -selection clipboard -o'
+fi
+
+alias emacs="emacs -nw"
+alias vim="emacs"
+alias vi="emacs"
+
+function command_exists {
+    type "$1" &> /dev/null ;
+}
+
+function package_exists {
+    dpkg -s "$1" &> /dev/null ;
+}
+
+function repository_exists {
+    grep ^ /etc/apt/sources.list /etc/apt/sources.list.d/* | grep "$1" &> /dev/null ;
+}
+
+function pip_package_exists {
+    pip show "$1" &> /dev/null
+}
+
+function mkcd {
+    if [ ! -d $1 ]; then
+        mkdir $1
+    fi
+    cd $1
+}
+
+alias ag="ag --hidden"
+
+# git commands
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+# cmake commands
+alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1"
+
+# set up icon in terminal
+if command_exists /opt/coreutils/bin/ls; then
+    alias ls='/opt/coreutils/bin/ls --color'
+elif command_exists /opt/coreutil/bin/ls; then
+    alias ls='/opt/coreutil/bin/ls --color'
+fi
+
+if [ $INSIDE_EMACS ]; then
+    alias ls='ls --color=auto'
+fi
+
+case "$EMACS" in
+    t)
+        PROMPT_COMMAND=
+        PS1="[\u@\h:\w]$ "
+esac
+
+function javapltuml {
+    java -jar ~/publicWorkspace/dev/pConfig/emacs/thirdparty/plantuml.jar $1
+}
+
+function echopy {
+    echo $1 | pbcopy
+}
+
+# space for development
+DEVSPACE=$HOME/publicWorkspace/dev
+alias mvdevspace="cd $DEVSPACE"
+
+function create_cpp_cmake_workspace {
+    if [ "$#" -ne 1 ]; then
+        echo "Usage: create_cpp_cmake_workspace [project name]"
+        return
+    fi
+
+    if ! [ -h $HOME/.personal_templates ]; then
+       echo "personal template directory does not exist"
+       return
+    fi
+
+    cp -r $HOME/.personal_templates/cpp_cmake_workspace/. .
+
+    # replace the temporary_project_name directory with argument name
+    find ./ -depth -type d -name "temporary_project_name" -execdir mv {} $1 \;
+
+    # grep and replace phrase with argument name
+    grep -rnwl ./ -e "temporary_project_name" | xargs -I {} sed -i 's/temporary_project_name/'"$1"'/g' {}
+
+    mv ./cmake/build_options.cmake ./cmake/$1_build_options.cmake
+    mv ./cmake/Doxyfile.in ./cmake/$1_Doxyfile.in
+    mv ./include/$1/temporary_project_name.hpp ./include/$1/$1.hpp
+    mv ./src/$1/temporary_project_name.cpp ./src/$1/$1.cpp
+    mv ./tests/Test.cpp ./tests/Test$1.cpp
+}
+
+function create_cpp_cmake_examples_workspace {
+    if [ "$#" -ne 1 ]; then
+        echo "Usage: create_cpp_cmake_examples_workspace [project name]"
+        return
+    fi
+
+    if ! [ -h $HOME/.personal_templates ]; then
+       echo "personal template directory does not exist"
+       return
+    fi
+
+    cp -r $HOME/.personal_templates/cpp_cmake_examples_workspace/. .
+
+    # replace the temporary_project_name directory with argument name
+    find ./ -depth -type d -name "temporary_project_name" -execdir mv {} $1 \;
+
+    # grep and replace phrase with argument name
+    grep -rnwl ./ -e "temporary_project_name" | xargs -I {} sed -i 's/temporary_project_name/'"$1"'/g' {}
+}
+
+function video_number_frame {
+    if ! command_exists ffprobe; then
+        echo "no ffmpeg"
+        return
+    fi
+
+    if [ "$#" -ne 1 ]; then
+        echo "Usage: video_number_frame [path to v]"
+        return
+    fi
+
+    ffprobe -v error -select_streams v:0 -show_entries stream=nb_frames -of default=nokey=1:noprint_wrappers=1 $1
+}
+
+function clean_python_package {
+    PYTHON_RUBBISH="build dist *.egg-info __pycache__ *.pyc"
+    for type in ${PYTHON_RUBBISH}; do
+        find ./ -name $type | xargs rm -rf
+    done
+
+    if [ -f files.txt ]; then
+        cat ./files.txt | xargs rm -rf
+    fi
+
+    rm -rf ./files.txt
+}
+
+function qreplace {
+    find ./ -type f ! -path "./.git/*" ! -path "*./build" ! -path "./data/*" | xargs sed -i "s/$1/$2/g"
+}
+
+function clang-format-all {
+    if command_exists clang-format; then
+        find . \
+             \( -iname '*.c' \
+             -o -iname '*.cc' \
+             -o -iname '*.cpp' \
+             -o -iname '*.h' \
+             -o -iname '*.hh' \
+             -o -iname '*.hpp' \
+             -o -iname '*.ipp' \) \
+            | xargs clang-format -i
+    else
+        echo "clang-formatter not found\n"
+    fi
+}

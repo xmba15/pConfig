@@ -1,0 +1,165 @@
+# -*- mode: snippet -*-
+# name: weighted_graph
+# key: weighted_graph
+# --
+
+#include <algorithm>
+#include <optional>
+#include <queue>
+#include <sstream>
+#include <utility>
+#include <vector>
+
+template <typename WEIGHT_TYPE> class WeightedGraph {
+public:
+  struct Edge {
+    Edge(int src, int dest, WEIGHT_TYPE weight)
+        : m_src(src), m_dest(dest), m_weight(weight) {}
+    int m_src, m_dest;
+    WEIGHT_TYPE m_weight;
+  };
+
+public:
+  // Pair->(vertex, weight)
+  using Pair = std::pair<int, WEIGHT_TYPE>;
+
+  WeightedGraph(const std::vector<Edge> &edges, const int nodeNum,
+                const bool isDirected = false)
+      : m_edges(edges), m_nodeNum(nodeNum), m_isDirected(isDirected) {
+    m_adjList.resize(nodeNum);
+
+    for (const Edge &edge : edges) {
+      m_adjList[edge.m_src].emplace_back(
+          std::make_pair(edge.m_dest, edge.m_weight));
+      if (!m_isDirected) {
+        m_adjList[edge.m_dest].emplace_back(
+            std::make_pair(edge.m_src, edge.m_weight));
+      }
+    }
+  }
+
+  /**
+   *  @return edges in minimum spanning tree
+   */
+  std::vector<Edge> estimateKruskalMST() const;
+
+  /**
+   *  @return sum of weights of minimum spanning tree
+   */
+  WEIGHT_TYPE estimatePrimMST(const int src = 0) const;
+
+private:
+  std::vector<std::vector<Pair>> m_adjList;
+  std::vector<Edge> m_edges;
+  int m_nodeNum;
+  bool m_isDirected;
+};
+
+struct Subset {
+  int m_parent;
+  int m_rank;
+
+  Subset(const int parent, const int rank) : m_parent(parent), m_rank(rank) {}
+
+  static int find(std::vector<Subset> &subsets, const int i);
+  static void joinUnion(std::vector<Subset> &subsets, const int x, const int y);
+};
+
+int Subset::find(std::vector<Subset> &subsets, const int i) {
+  if (subsets[i].m_parent != i) {
+    subsets[i].m_parent = Subset::find(subsets, subsets[i].m_parent);
+  }
+
+  return subsets[i].m_parent;
+}
+
+void Subset::joinUnion(std::vector<Subset> &subsets, const int x, const int y) {
+  int xRoot = find(subsets, x);
+  int yRoot = find(subsets, y);
+
+  if (subsets[xRoot].m_rank < subsets[yRoot].m_rank)
+    subsets[xRoot].m_parent = yRoot;
+  else if (subsets[xRoot].m_rank > subsets[yRoot].m_rank)
+    subsets[yRoot].m_parent = xRoot;
+  else {
+    subsets[yRoot].m_parent = xRoot;
+    subsets[xRoot].m_rank++;
+  }
+}
+
+template <typename WEIGHT_TYPE>
+std::vector<typename WeightedGraph<WEIGHT_TYPE>::Edge>
+WeightedGraph<WEIGHT_TYPE>::estimateKruskalMST() const {
+  std::vector<Edge> result;
+  result.reserve(m_edges.size());
+
+  std::vector<Edge> sortedEdges(m_edges);
+  std::sort(sortedEdges.begin(), sortedEdges.end(),
+            [](const Edge &e1, const Edge e2) {
+              if (e1.m_weight != e2.m_weight) {
+                return e1.m_weight < e2.m_weight;
+              }
+
+              return (e1.m_src + e1.m_dest + e1.m_weight <
+                      e2.m_src + e2.m_dest + e2.m_weight);
+            });
+
+  std::vector<Subset> subsets;
+  subsets.reserve(m_nodeNum);
+  for (int i = 0; i < m_nodeNum; ++i) {
+    subsets.emplace_back(Subset(i, 0));
+  }
+
+  for (const Edge &curEdge : sortedEdges) {
+    int x = Subset::find(subsets, curEdge.m_src);
+    int y = Subset::find(subsets, curEdge.m_dest);
+
+    if (x != y) {
+      result.emplace_back(curEdge);
+      Subset::joinUnion(subsets, x, y);
+    }
+  }
+
+  return result;
+}
+
+template <typename WEIGHT_TYPE>
+WEIGHT_TYPE WeightedGraph<WEIGHT_TYPE>::estimatePrimMST(const int src) const {
+  // iPair -> (weight, vertex)
+  using iPair = std::pair<WEIGHT_TYPE, int>;
+
+  std::priority_queue<iPair, std::vector<iPair>, std::greater<iPair>> minHeap;
+  std::vector<WEIGHT_TYPE> keys(m_nodeNum,
+                                std::numeric_limits<WEIGHT_TYPE>::max());
+
+  std::vector<int> parents(m_nodeNum, -1);
+  std::vector<bool> inMst(m_nodeNum, false);
+
+  keys[src] = 0;
+  minHeap.push(std::make_pair(keys[src], src));
+
+  while (!minHeap.empty()) {
+    int u = minHeap.top().second;
+    minHeap.pop();
+
+    inMst[u] = true;
+
+    for (const WeightedGraph::Pair &elem : m_adjList[u]) {
+      int v = elem.first;
+      WEIGHT_TYPE weight = elem.second;
+
+      if (!inMst[v] && keys[v] > weight) {
+        keys[v] = weight;
+        minHeap.push(std::make_pair(keys[v], v));
+        parents[v] = u;
+      }
+    }
+  }
+
+  WEIGHT_TYPE result = static_cast<WEIGHT_TYPE>(0);
+  for (const WEIGHT_TYPE key : keys) {
+    result += key;
+  }
+
+  return result;
+}

@@ -1,0 +1,33 @@
+export ROS_DISTRO=melodic
+
+function command_exists {
+    type "$1" &> /dev/null ;
+}
+
+function init_ros {
+    if [ -f $HOME/ros/$ROS_DISTRO/install_isolated/setup.bash ]; then
+        source $HOME/ros/$ROS_DISTRO/install_isolated/setup.bash
+    fi
+
+    if [ -f /opt/ros/$ROS_DISTRO/setup.bash ]; then
+       source /opt/ros/$ROS_DISTRO/setup.bash
+    fi
+
+    if [ -f $HOME/ros/$ROS_DISTRO/devel/setup.bash ]; then
+        source $HOME/ros/$ROS_DISTRO/devel/setup.bash
+    fi
+}
+init_ros
+
+if command_exists colcon; then
+    alias colcon_clean="rm -rf build install log"
+fi
+
+function mvrosdev {
+    if [ -d $HOME/ros/$ROS_DISTRO ]; then
+        cd $HOME/ros/$ROS_DISTRO
+    else
+        echo "ros env not found\n"
+    fi
+
+}

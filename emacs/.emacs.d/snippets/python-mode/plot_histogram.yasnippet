@@ -1,0 +1,36 @@
+# -*- mode: snippet -*-
+# name: plot_histogram
+# key: plot_histogram
+# --
+
+def plot_histogram(
+    ys, num_classes, class_labels, graph_labels, title, colors, figsize=(
+        15, 15)
+):
+    from matplotlib import pyplot as plt
+
+    fig = plt.figure(figsize=figsize)
+    ax = fig.add_subplot(111)
+
+    for i, y in enumerate(ys):
+        ax.bar(
+            range(num_classes),
+            np.bincount(y),
+            width=1.0,
+            align="center",
+            color=colors[i],
+            label=graph_labels[i],
+        )
+
+    plt.xlim([-1, num_classes])
+    ax.xaxis.grid(False)
+    ax.xaxis.set_ticks_position("none")
+    ax.yaxis.grid(False)
+    ax.set_xticks(range(num_classes))
+    ax.set_xticklabels(class_labels, rotation=90, size="xx-small")
+    legend = ax.legend(loc="upper center", shadow=True)
+    legend_frame = legend.get_frame()
+    legend_frame.set_facecolor("white")
+    legend_frame.set_edgecolor("black")
+    plt.ylabel("number of samples")
+    plt.title(title)

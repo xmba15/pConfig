@@ -1,0 +1,23 @@
+# -*- mode: snippet -*-
+# name: ssh_config
+# key: ssh_config
+# --
+Host *
+     ForwardAgent yes
+     ForwardX11 no
+     ForwardX11Trusted yes
+     Protocol 2
+     ServerAliveInterval 60
+     ServerAliveCountMax 30
+     TCPKeepAlive yes
+     PreferredAuthentications publickey
+
+Host Github
+     HostName github.com
+     User git
+     IdentityFile ~/.ssh/id_rsa
+
+Host Bitbucket
+     HostName bitbucket.org
+     User git
+     IdentityFile ~/.ssh/id_rsa
