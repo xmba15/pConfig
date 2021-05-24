@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: conda_environment
+# key: conda_environment
+# expand-env: ((yas/indent-line 'nil))
+# --
+
+name: ${env_name}
+channels:
+  - pytorch
+  - defaults
+dependencies:
+  - python >=3.6
+  - anaconda
+  - pytorch=1.5.0
+  - torchvision=0.6.0
+  - cudatoolkit=10.2
+  - cudnn=7.6.5
+  - pip
+  - pip:
+      - -r file:requirements.txt
