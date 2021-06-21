@@ -1,0 +1,32 @@
+<launch>
+  <arg name="rosbag_path" default="/home/btran/publicWorkspace/data/robovision_livox/lidar_cameras.bag"/>
+
+  <node pkg="rosbag" type="play" name="rosbag" required="true" args="$(arg rosbag_path)">
+  </node>
+
+  <node pkg="ros_tools" type="process_robovision3.py" name="process_robovision3"/>
+
+  <node name="image_proc" pkg="image_proc" type="image_proc" ns="/inner/left"/>
+  <node name="image_proc" pkg="image_proc" type="image_proc" ns="/inner/right"/>
+  <node name="image_proc" pkg="image_proc" type="image_proc" ns="/outer/left"/>
+  <node name="image_proc" pkg="image_proc" type="image_proc" ns="/outer/right"/>
+
+  <node pkg="rosbag" type="record" name="rosbag_record"
+       args="record
+             /inner/left/image_rect_color
+             /inner/left/camera_info
+             /inner/right/image_rect_color
+             /inner/right/camera_info
+
+             /outer/left/image_rect_color
+             /outer/left/camera_info
+             /outer/right/image_rect_color
+             /outer/right/camera_info
+
+             /livox/top
+             /livox/bottom
+             ">
+  </node>
+
+
+</launch>
