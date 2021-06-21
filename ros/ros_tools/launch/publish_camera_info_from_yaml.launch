@@ -1,0 +1,11 @@
+<launch>
+  <arg name="camera_info_yaml_path" default=""/>
+  <arg name="camera_info" default="camera_info"/>
+
+  <group if="$(eval arg('camera_info_yaml_path') != '')">
+    <node pkg="ros_tools" type="publish_camera_info_from_yaml.py" name="publish_camera_info_from_yaml">
+      <param name="~camera_info_yaml_path" value="$(arg camera_info_yaml_path)"/>
+      <remap from="~camera_info" to="$(arg camera_info)"/>
+    </node>
+  </group>
+</launch>
